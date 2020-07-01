@@ -24,3 +24,10 @@ create and enter the dir which u need to use
 1. git add .
 2. git commit -m "add the descp"
 3. git push origin master
+
+
+### URL Endpoints....
+
+* login : https://localhost/rest-auth/login/
+* logout : https://localhost/rest-auth/logout/
+* register : https://localhost/rest-auth/registration/ 

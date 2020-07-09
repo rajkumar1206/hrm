@@ -26,14 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'employee',
+
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-
-    # 'django.contrib.sites',
-    # 'allauth',
-    # 'allauth.account',
-    # 'rest_auth.registration',
 
     'django.contrib.sites',
     'allauth',

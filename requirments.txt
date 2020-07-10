@@ -4,6 +4,7 @@ django-rest-auth
 django-rest-auth[with_social]
 rest_framework 
 rest_framework.authtoken
+django-cors-headers
 
 {% comment %}
 

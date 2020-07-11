@@ -62,8 +62,6 @@ class create_employee(APIView):
 class delete_employee(APIView):
     permission_classes = (IsAuthenticated, )
     def get(self, request, employee_id):
-        print("YYY")
-        print(employee_id)
         try:
             total_update = Employee.objects.filter(employee_id=employee_id).update(
                 is_active_employee='NO')
@@ -80,11 +78,10 @@ class update_employee(APIView):
     permission_classes = (IsAuthenticated, )
     def post(self, request, employee_id):
         data = request.data["body"]["data"]
-        print(data)
         try:
             qs = Employee.objects.get(employee_id=employee_id)
-            dic_model = model_to_dict(qs)
-            if dic_model:
+            dictionary_model = model_to_dict(qs)
+            if dictionary_model:
                 Employee.objects.filter(employee_id=employee_id).update(first_name=data["first_name"], middle_name=data["middle_name"], last_name=data["last_name"], email=data["email"], gender=data["gender"],
                                                                         date_of_birth=data["date_of_birth"], phone_number=int(data["phone_number"]), door_no=int(data["door_no"]), street=data["street"], area=data["area"], state=data["state"], pincode=int(data["pincode"]), department=data["department"])
                 return JsonResponse({"status": "success"})

@@ -11,7 +11,7 @@ create and enter the dir which u need to use
 3. git pull origin master
 4. pip install virtualenv
 5. virtualenv env
-6. env/Sripts/activate
+6. env/Scripts/activate
 7. pip install -r requirements.txt
 8. pip install django-rest-auth[with_social]
 9. cd colors

@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.models import User
 from django.http import HttpResponse, JsonResponse
-from .models import Employee
+from django.core.mail import send_mail, EmailMessage
+from .models import Employee, EmployeeType
 from django.core import serializers
 import json
 from django.forms.models import model_to_dict
@@ -9,6 +11,16 @@ from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+import requests
+import string 
+import random 
+import sqlite3
+import django
+from django.conf import settings
+from rest_framework.authtoken.models import Token
+  
+# initializing size of string  
+N = 7
 
 
 class index(APIView):
@@ -50,12 +62,45 @@ class create_employee(APIView):
     def post(self, request):
         data = request.data["body"]["data"]
         try:
+            print(self.request.user)
+            random_pass = ''.join(random.choices(string.ascii_uppercase +
+                                string.digits, k = N))
+
+            print("Random password : "+str(random_pass))
+
+            user =  User.objects.create_user(data["employee_id"], None, data["employee_id"] ) # password will change into random after posh notifiaction
+            user.save()
+
+            # EMAIL NOTIFICCATION
+            # send_mail(
+            #     'Your Employee ID and password',
+            #     'Your username is : '+ data["employee_id"] + " \npassword : " + random_pass,
+            #     settings.EMAIL_HOST_USER,
+            #     [data["email"]],
+            #     fail_silently=False,
+            # )
+            # msg = EmailMessage('Your Employee ID and password',
+            #                 'Your username is : '+ data["employee_id"] + " \npassword : " + random_pass, to=[data["email"]])
+            # msg.send()
+
+            token = Token.objects.create(user=user)
+
+            print(token.key)
+
+            emp_type = EmployeeType(employee_id=data["employee_id"], token=token.key, user_type="EMPLOYEE")
+            emp_type.save()
+
             emp = Employee(employee_id=data["employee_id"], first_name=data["first_name"], middle_name=data["middle_name"], last_name=data["last_name"], email=data["email"], gender=data["gender"],
                                                                         date_of_birth=data["date_of_birth"], phone_number=int(data["phone_number"]), door_no=int(data["door_no"]), street=data["street"], area=data["area"], state=data["state"], pincode=int(data["pincode"]), department=data["department"])
             emp.save()
             return JsonResponse({"status": "success"})
+        except django.db.utils.IntegrityError:
+            return JsonResponse({"status": "failed", "err_message": "The employee id is already taken"})
+        except ValueError:
+            return JsonResponse({"status": "failed", "err_message": "Please enter valid credential"})
         except:
-            return JsonResponse({"status": "failed"})
+            return JsonResponse({"status": "failed", "err_message": "Some internal error"})
+
 
 
 

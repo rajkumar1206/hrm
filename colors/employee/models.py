@@ -1,5 +1,16 @@
 from django.db import models
 
+class EmployeeType(models.Model):
+    employee = "EMPLOYEE"
+    hr = "HR"
+    type_choice_set = [
+        (employee, "EMPLOYEE"),
+        (hr, "HR")
+    ]
+    employee_id = models.CharField(max_length=20, blank=False, primary_key=True)
+    token = models.CharField(max_length=20)
+    user_type = models.CharField(max_length=10,choices=type_choice_set, default=employee)
+
 class Employee(models.Model):
     employee_id = models.CharField(max_length=20, blank=False, primary_key=True)
     first_name = models.CharField(max_length=20)

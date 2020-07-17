@@ -19,7 +19,7 @@ import django
 from django.conf import settings
 from rest_framework.authtoken.models import Token
   
-# initializing size of string  
+# initializing size of random string  
 N = 7
 
 
@@ -68,20 +68,17 @@ class create_employee(APIView):
 
             print("Random password : "+str(random_pass))
 
-            user =  User.objects.create_user(data["employee_id"], None, data["employee_id"] ) # password will change into random after posh notifiaction
+            user =  User.objects.create_user(data["employee_id"], None, random_pass )
             user.save()
 
             # EMAIL NOTIFICCATION
-            # send_mail(
-            #     'Your Employee ID and password',
-            #     'Your username is : '+ data["employee_id"] + " \npassword : " + random_pass,
-            #     settings.EMAIL_HOST_USER,
-            #     [data["email"]],
-            #     fail_silently=False,
-            # )
-            # msg = EmailMessage('Your Employee ID and password',
-            #                 'Your username is : '+ data["employee_id"] + " \npassword : " + random_pass, to=[data["email"]])
-            # msg.send()
+            send_mail(
+                'Your Employee ID and password',
+                'Your username is : '+ data["employee_id"] + " \npassword : " + random_pass,
+                settings.EMAIL_HOST_USER,
+                [data["email"]],
+                fail_silently=False,
+            )
 
             token = Token.objects.create(user=user)
 

@@ -1,7 +1,8 @@
 from django.db import models
 
 class Leave(models.Model):
-    leave_type = models.CharField(max_length=30, primary_key=True)
+    leave_type = models.CharField(max_length=30)
+    leave_slug = models.SlugField(max_length=30, unique=True)
     leave_description = models.CharField(max_length=300)
     total_leaves_given = models.IntegerField()
 
@@ -27,7 +28,7 @@ class Application(models.Model):
     end_date = models.DateField()
     remark = models.CharField(max_length=300)
     approval = models.CharField(max_length=1, choices=status_choice,  default=pending)
-    hr_remark = models.CharField(max_length=100, default="")
+    hr_remark = models.CharField(max_length=100, default="NA", blank=True)
 
     def __str__(self):
         return self.email + " " + self.remark

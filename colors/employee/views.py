@@ -17,6 +17,7 @@ import sqlite3
 import django
 from django.conf import settings
 from rest_framework.authtoken.models import Token
+from leave.permissions import IsEmployee
   
 # initializing size of random string  
 N = 7
@@ -57,16 +58,18 @@ class employee_detail(APIView):
 
 
 class create_employee(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated&~IsEmployee, )
     def post(self, request):
         data = request.data["body"]["data"]
         try:
-            print(self.request.user)
+            # Random String producer
             random_pass = ''.join(random.choices(string.ascii_uppercase +
                                 string.digits, k = N))
 
             print("Random password : "+str(random_pass))
+            
 
+            # creating user
             user =  User.objects.create_user(data["employee_id"], None, random_pass )
             user.save()
 
@@ -79,10 +82,11 @@ class create_employee(APIView):
                 fail_silently=False,
             )
 
+            # token creating for the user
             token = Token.objects.create(user=user)
-
             print(token.key)
 
+            # Database Management
             emp_type = EmployeeType(employee_id=data["employee_id"], token=token.key, user_type="EMPLOYEE")
             emp_type.save()
 

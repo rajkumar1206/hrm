@@ -35,11 +35,24 @@ class employee_list(APIView):
         try:
             data = serializers.serialize(
                 "json", Employee.objects.filter(is_active_employee='YES'))
-            json_data = {"status": "success", "data": data}
+            json_data = {"status": "success", "data": json.loads(data)}
             return JsonResponse(json_data, safe=False)
         except:
             return JsonResponse({"status": "failed"})
 
+
+
+class employee_id_list(APIView):
+    permission_classes = (IsAuthenticated, )
+    def get(self, request):
+        # try:
+        print("Employee List ids")
+        data = serializers.serialize(
+            "json", Employee.objects.filter(is_active_employee='YES'), fields=("employee_id", ))
+        json_data = {"status": "success", "data": json.loads(data)}
+        return JsonResponse(json_data, safe=False)
+        # except:
+        #     return JsonResponse({"status": "failed"})
 
 
 class employee_detail(APIView):
@@ -53,7 +66,7 @@ class employee_detail(APIView):
         except:
             err_data = {
                 "status": "failed",
-                "err_details": "Employee Doesn't exist with the given employee id"}
+                "err_message": "Employee Doesn't exist with the given employee id"}
             return JsonResponse(err_data, safe=False)
 
 
@@ -98,6 +111,8 @@ class create_employee(APIView):
             return JsonResponse({"status": "failed", "err_message": "The employee id is already taken"})
         except ValueError:
             return JsonResponse({"status": "failed", "err_message": "Please enter valid credential"})
+        except AttributeError:
+            return JsonResponse({"status": "failed", "err_message": "Please enter the valid attribute credential"})
         except:
             return JsonResponse({"status": "failed", "err_message": "Some internal error"})
 
@@ -124,13 +139,13 @@ class update_employee(APIView):
     def post(self, request, employee_id):
         data = request.data["body"]["data"]
         try:
-            qs = Employee.objects.get(employee_id=employee_id)
-            dictionary_model = model_to_dict(qs)
-            if dictionary_model:
+            if Employee.objects.filter(employee_id=employee_id).exists():
+                qs = Employee.objects.get(employee_id=employee_id)
+                dictionary_model = model_to_dict(qs)
                 Employee.objects.filter(employee_id=employee_id).update(first_name=data["first_name"], middle_name=data["middle_name"], last_name=data["last_name"], email=data["email"], gender=data["gender"],
                                                                         date_of_birth=data["date_of_birth"], phone_number=int(data["phone_number"]), door_no=int(data["door_no"]), street=data["street"], area=data["area"], state=data["state"], pincode=int(data["pincode"]), department=data["department"])
                 return JsonResponse({"status": "success"})
             else: 
-                return JsonResponse({"status": "failed"})
+                return JsonResponse({"status": "failed", "err_message": "Employee with the given Id doesn't exist"})
         except:
-            return JsonResponse({"status": "failed"})
+            return JsonResponse({"status": "failed", "err_message": "Server error"})

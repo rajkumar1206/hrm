@@ -34,4 +34,4 @@ class Application(models.Model):
         return self.email + " " + self.remark
 
     class Meta:
-        ordering = ['pub_date']
+        ordering = ['-pub_date']

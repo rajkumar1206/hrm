@@ -30,7 +30,7 @@ class index(APIView):
 
 
 class employee_list(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
     def get(self, request):
         try:
             data = serializers.serialize(
@@ -43,20 +43,20 @@ class employee_list(APIView):
 
 
 class employee_id_list(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
     def get(self, request):
-        # try:
-        print("Employee List ids")
-        data = serializers.serialize(
-            "json", Employee.objects.filter(is_active_employee='YES'), fields=("employee_id", ))
-        json_data = {"status": "success", "data": json.loads(data)}
-        return JsonResponse(json_data, safe=False)
-        # except:
-        #     return JsonResponse({"status": "failed"})
+        try:
+            print("Employee List ids")
+            data = serializers.serialize(
+                "json", Employee.objects.filter(is_active_employee='YES'), fields=("employee_id", ))
+            json_data = {"status": "success", "data": json.loads(data)}
+            return JsonResponse(json_data, safe=False)
+        except:
+            return JsonResponse({"status": "failed"})
 
 
 class employee_detail(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
     def get(self, request,  employee_id):
         try:
             employee_detail = Employee.objects.get(employee_id=employee_id)
@@ -71,7 +71,7 @@ class employee_detail(APIView):
 
 
 class create_employee(APIView):
-    permission_classes = (IsAuthenticated&~IsEmployee, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
     def post(self, request):
         data = request.data["body"]["data"]
         try:
@@ -120,7 +120,7 @@ class create_employee(APIView):
 
 
 class delete_employee(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
     def get(self, request, employee_id):
         try:
             total_update = Employee.objects.filter(employee_id=employee_id).update(
@@ -135,7 +135,7 @@ class delete_employee(APIView):
 
 
 class update_employee(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
     def post(self, request, employee_id):
         data = request.data["body"]["data"]
         try:

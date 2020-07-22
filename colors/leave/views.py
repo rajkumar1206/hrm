@@ -45,7 +45,7 @@ class leave_list(APIView):
 
 
 class leave_types(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
 
     def get(self, request, leave_type):
         try:
@@ -59,7 +59,7 @@ class leave_types(APIView):
 
 
 class application_approval(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (IsAuthenticated & ~IsEmployee, )
 
     def post(self, request, pk):
         if request.data["body"]["data"] == "Approve":
@@ -86,7 +86,7 @@ class application_approval(APIView):
 
 
 class employee_records(APIView):
-    permission_classes = [IsEmployee]
+    permission_classes = [IsAuthenticated & IsEmployee]
 
     def get(self, request, employee_id):
         try:
@@ -98,7 +98,7 @@ class employee_records(APIView):
 
 
 class leave_application(APIView):
-    permission_classes = [IsEmployee]
+    permission_classes = [IsAuthenticated & IsEmployee]
     def post(self, request, employee_id, leave_type):
         try:
             if employee_id == self.request.user.username:

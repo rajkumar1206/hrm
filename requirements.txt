@@ -65,3 +65,5 @@ virtualenv==20.0.24
 wcwidth==0.1.8
 wrapt==1.11.2
 zipp==3.0.0
+django-cors-headers
+python-slugify

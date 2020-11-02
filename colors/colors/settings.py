@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    # 'django.contrib.staticfiles',
+    'django.contrib.staticfiles',
 
     'employee',
     'leave',
@@ -147,4 +147,4 @@ REST_FRAMEWORK = {
 }
 
 
-# STATIC_URL = '/static/'
+STATIC_URL = '/static/'

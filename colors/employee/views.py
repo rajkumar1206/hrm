@@ -24,7 +24,7 @@ N = 7
 
 
 class index(APIView):
-    permission_classes = (IsAuthenticated, )
+#     permission_classes = (IsAuthenticated, )
     def post(self, request):
         return Response({"data": "hi there, this is for demo trial"})
 
